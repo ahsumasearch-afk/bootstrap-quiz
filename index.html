@@ -1,38 +1,1392 @@
-<!doctype html>
-<html lang="de" data-bs-theme="dark">
+<!DOCTYPE html>
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bootstrap-5-Quiz</title>
-<meta name="description" content="80 Fragen zu Bootstrap 5: Grid, Abstände, Komponenten, Formulare, Sass und der Umstieg von Bootstrap 4. Mit Auflösung und Erklärung nach jeder Frage.">
-<meta name="theme-color" content="#212529">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🅱️</text></svg>">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css?v=1.0.0" rel="stylesheet">
+<title>Bootstrap Check — Wissensstand testen</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --bg-glow-1:rgba(111,66,193,.16);
+  --bg-glow-2:rgba(13,110,253,.10);
+  --card:#ffffff;
+  --card-2:#f1f3f9;
+  --text:#101322;
+  --muted:#646b83;
+  --line:#e2e5ee;
+  --line-strong:#cdd2e0;
+  --accent:#6f42c1;
+  --accent-soft:rgba(111,66,193,.10);
+  --ok:#0f9d58;
+  --ok-soft:rgba(15,157,88,.12);
+  --bad:#d93b47;
+  --bad-soft:rgba(217,59,71,.10);
+  --warn:#c8860d;
+  --warn-soft:rgba(200,134,13,.14);
+  --code-bg:#161a2b;
+  --code-text:#e7eaf3;
+  --shadow:0 1px 2px rgba(16,19,34,.05), 0 12px 32px -12px rgba(16,19,34,.18);
+  --radius:16px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0c0e18;
+    --bg-glow-1:rgba(121,82,179,.22);
+    --bg-glow-2:rgba(120,60,180,.08);
+    --card:#151827;
+    --card-2:#1c2032;
+    --text:#eef0f7;
+    --muted:#98a0bb;
+    --line:#262b40;
+    --line-strong:#39405c;
+    --accent:#b39ae8;
+    --accent-soft:rgba(179,154,232,.14);
+    --ok:#3ecf8e;
+    --ok-soft:rgba(62,207,142,.14);
+    --bad:#ff6b76;
+    --bad-soft:rgba(255,107,118,.14);
+    --warn:#e8b13c;
+    --warn-soft:rgba(232,177,60,.16);
+    --code-bg:#0a0d18;
+    --code-text:#e7eaf3;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.7);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(760px 460px at 92% 4%, var(--bg-glow-2), transparent 62%);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 18px 80px;
+}
+.wrap{max-width:820px;margin:0 auto}
+
+/* ---------- Kopf ---------- */
+.masthead{margin-bottom:22px}
+.brand{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:14px;
+}
+.brand__dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+h1{
+  margin:0;font-size:clamp(30px,6.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1.08;
+}
+.sub{margin:9px 0 0;color:var(--muted);font-size:15px;max-width:56ch}
+
+/* ---------- Karten ---------- */
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-top:18px;
+}
+@media (min-width:640px){.panel{padding:26px 28px}}
+.label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px;font-weight:600;
+}
+.hint{color:var(--muted);font-size:13.5px;margin:-4px 0 14px}
+
+/* ---------- Chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font:inherit;font-size:14px;font-weight:500;
+  padding:8px 14px;background:transparent;color:var(--text);
+  border:1px solid var(--line-strong);border-radius:999px;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .1s ease;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.chip--d1[aria-pressed="true"]{background:var(--ok);border-color:var(--ok)}
+.chip--d2[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#1a1300}
+.chip--d3[aria-pressed="true"]{background:var(--bad);border-color:var(--bad)}
+.chip__n{font-family:var(--mono);font-size:11px;opacity:.6;margin-right:5px}
+
+.fieldset{margin-bottom:20px}
+.fieldset:last-of-type{margin-bottom:0}
+
+/* Themenliste */
+.topics{
+  margin-top:8px;max-height:0;overflow:hidden;
+  transition:max-height .3s ease;
+}
+.topics.open{max-height:1400px;overflow:auto}
+.topics__inner{
+  border:1px solid var(--line);border-radius:12px;background:var(--card-2);
+  padding:14px 16px;
+}
+.group{margin-bottom:16px}
+.group:last-child{margin-bottom:0}
+.group__h{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin:0 0 8px;
+}
+.disclosure{
+  font:inherit;font-size:14px;font-weight:600;color:var(--accent);
+  background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+}
+.disclosure__caret{transition:transform .25s ease;display:inline-block}
+.disclosure[aria-expanded="true"] .disclosure__caret{transform:rotate(90deg)}
+
+/* ---------- Buttons ---------- */
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{
+  font:inherit;font-weight:650;font-size:15px;
+  padding:13px 24px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+  transition:filter .15s ease,transform .1s ease,background .15s ease;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn--ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+.btn--ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+.btn--quiet{background:transparent;border-color:transparent;color:var(--muted);padding:13px 12px}
+.btn--quiet:hover{color:var(--bad);filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible,.disclosure:focus-visible{
+  outline:3px solid var(--accent);outline-offset:2px;
+}
+
+/* ---------- Quiz ---------- */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.meta__left{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-weight:600}
+.clock{
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  padding:4px 10px;border-radius:999px;
+  background:var(--card-2);border:1px solid var(--line);color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.awaybadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);
+}
+.meta__right{display:flex;align-items:center;gap:7px}
+.badge{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;border:1px solid transparent;
+}
+.badge--d1{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.badge--d2{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.badge--d3{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.tally{font-family:var(--mono);font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px}
+.tally--ok{background:var(--ok-soft);color:var(--ok)}
+.tally--bad{background:var(--bad-soft);color:var(--bad)}
+
+.meter{height:7px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden;margin-bottom:22px}
+.meter__fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+.topicline{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+.question{font-size:clamp(20px,3.2vw,25px);font-weight:700;letter-spacing:-.015em;line-height:1.35;margin:0 0 18px}
+.question code,.explain code,.review code{
+  font-family:var(--mono);font-size:.86em;background:var(--card-2);
+  border:1px solid var(--line);padding:1px 6px;border-radius:6px;white-space:nowrap;
+}
+pre{
+  font-family:var(--mono);font-size:13px;line-height:1.6;
+  background:var(--code-bg);color:var(--code-text);
+  padding:16px 18px;border-radius:12px;overflow:auto;margin:0 0 18px;
+  border:1px solid var(--line);
+}
+
+.opts{display:grid;gap:9px}
+.opt{
+  font:inherit;font-size:15.5px;text-align:left;
+  padding:14px 16px;border-radius:12px;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--text);
+  cursor:pointer;display:flex;gap:13px;align-items:flex-start;
+  transition:border-color .15s ease,background .15s ease,transform .1s ease;
+}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:active:not(:disabled){transform:scale(.995)}
+.opt__key{
+  flex:none;width:24px;height:24px;border-radius:7px;
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  background:var(--card-2);border:1px solid var(--line);color:var(--muted);
+  margin-top:1px;
+}
+.opt__txt{flex:1}
+.opt__mark{flex:none;font-weight:700;font-size:16px;opacity:0;transition:opacity .2s ease}
+.opt--right{background:var(--ok-soft);border-color:var(--ok)}
+.opt--right .opt__key{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt--right .opt__mark{opacity:1;color:var(--ok)}
+.opt--wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt--wrong .opt__key{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt--wrong .opt__mark{opacity:1;color:var(--bad)}
+.opt:disabled{cursor:default}
+.opt--dim{opacity:.5}
+
+.explain{
+  margin-top:18px;padding:15px 17px;border-radius:12px;
+  background:var(--card-2);border:1px solid var(--line);
+  border-left:3px solid var(--accent);font-size:15px;
+  animation:rise .25s ease;
+}
+.explain--ok{border-left-color:var(--ok)}
+.explain--bad{border-left-color:var(--bad)}
+.explain strong{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:5px;color:var(--muted);
+}
+.explain--ok strong{color:var(--ok)}
+.explain--bad strong{color:var(--bad)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.keyhint{margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.gapmark{
+  background:var(--warn-soft);color:var(--warn);
+  border:1px dashed var(--warn);border-radius:5px;
+  padding:0 7px;font-weight:700;
+}
+.gapmark--ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok);border-style:solid}
+.gapmark--bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad);border-style:solid}
+.gapbox{display:grid;gap:10px}
+.gapbox__row{display:flex;gap:9px;flex-wrap:wrap}
+.gapbox__input{
+  flex:1;min-width:210px;
+  font-family:var(--mono);font-size:15.5px;
+  padding:13px 15px;border-radius:11px;
+  border:1px solid var(--line-strong);
+  background:var(--card-2);color:var(--text);
+}
+.gapbox__input::placeholder{color:var(--muted);font-family:inherit}
+.gapbox__input:focus{outline:3px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+.gapbox__input:disabled{opacity:.75}
+.gapbox__tipp{margin:0;font-size:13.5px;color:var(--muted)}
+.tipprow{margin:0 0 16px}
+.tipprow__head{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.tippbtn:disabled{opacity:.45;cursor:not-allowed;border-style:solid}
+.tippbtn:disabled:hover{border-color:var(--line-strong);color:var(--muted)}
+.tippneu{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);
+  animation:rise .25s ease;
+}
+.vorrat{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  color:var(--muted);margin:10px 0 0;
+}
+.tippbtn{
+  font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 13px;border-radius:9px;
+  border:1px dashed var(--line-strong);background:transparent;color:var(--muted);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:border-color .15s ease,color .15s ease;
+}
+.tippbtn:hover{border-color:var(--warn);color:var(--warn)}
+.tipptext{
+  margin:10px 0 0;padding:11px 14px;border-radius:10px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--text);
+  animation:rise .2s ease;
+}
+.tipptext b{color:var(--warn);font-weight:700}
+.tippbadge{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:4px 9px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);
+}
+.badge--tipp{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.tippliste{margin-top:24px}
+.tippliste__list{display:grid;gap:8px;margin-top:6px}
+.tippitem{
+  display:flex;gap:11px;align-items:flex-start;
+  background:var(--card-2);border:1px solid var(--line);
+  border-radius:11px;padding:11px 14px;font-size:14.5px;
+}
+.tippitem__mark{flex:none;font-weight:700;font-size:15px;line-height:1.5}
+.tippitem--ok .tippitem__mark{color:var(--ok)}
+.tippitem--bad .tippitem__mark{color:var(--bad)}
+.tippitem__txt{flex:1}
+.tippitem__thema{
+  display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px;
+}
+.loesung{
+  font-family:var(--mono);font-size:14px;
+  background:var(--card);border:1px solid var(--line-strong);
+  border-radius:7px;padding:2px 9px;display:inline-block;
+}
+.keyhint kbd{
+  font-family:var(--mono);font-size:11px;border:1px solid var(--line-strong);
+  border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--card-2);
+}
+
+/* ---------- Ergebnis ---------- */
+.scorewrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.facts{margin-top:24px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.fact{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.fact__k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.fact__v{font-size:21px;font-weight:750;letter-spacing:-.02em;margin:0;font-variant-numeric:tabular-nums}
+.fact__s{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+.fact--warn{border-color:var(--warn);background:var(--warn-soft)}
+.fact--warn .fact__v{color:var(--warn)}
+.fact--ok{border-color:var(--ok)}
+.aborted{
+  margin:14px 0 0;padding:11px 14px;border-radius:11px;font-size:14px;
+  background:var(--warn-soft);border:1px solid var(--warn);color:var(--warn);
+}
+.ring{
+  --p:0;
+  flex:none;width:132px;height:132px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p)*1%), var(--card-2) 0);
+  display:grid;place-items:center;position:relative;
+  transition:--p .8s ease;
+}
+.ring::after{
+  content:"";position:absolute;inset:9px;border-radius:50%;background:var(--card);
+}
+.ring__num{position:relative;z-index:1;font-size:31px;font-weight:800;letter-spacing:-.03em}
+.ring__num span{font-size:15px;font-weight:600;color:var(--muted)}
+.scoretext{flex:1;min-width:220px}
+.level{font-size:clamp(21px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+.leveldesc{margin:0;color:var(--muted);font-size:15px}
+
+.bars{margin-top:24px;display:grid;gap:13px}
+.bar__head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.bar__name{font-weight:600}
+.bar__val{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.bar__track{height:8px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden}
+.bar__fill{height:100%;border-radius:999px;transition:width .6s ease}
+.bar__fill--d1{background:var(--ok)}
+.bar__fill--d2{background:var(--warn)}
+.bar__fill--d3{background:var(--bad)}
+
+.gaps{margin-top:24px}
+.gaps__list{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.gap{
+  font-size:13px;font-weight:500;padding:5px 11px;border-radius:999px;
+  background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);
+}
+.gap__n{font-family:var(--mono);font-size:11px;opacity:.75;margin-left:4px}
+.plan__list{display:grid;gap:10px;margin-top:6px}
+.plan__item{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+}
+.plan__name{font-weight:650;font-size:15px}
+.plan__n{
+  font-family:var(--mono);font-size:11px;font-weight:700;margin-left:8px;
+  color:var(--bad);background:var(--bad-soft);border:1px solid var(--bad);
+  padding:2px 8px;border-radius:999px;
+}
+.plan__links,.review__links{display:flex;gap:8px;flex-wrap:wrap}
+.review__links{margin-top:11px}
+.lnk{
+  font:inherit;font-size:13px;font-weight:600;text-decoration:none;
+  padding:7px 13px;border-radius:9px;
+  border:1px solid var(--line-strong);color:var(--text);
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  transition:border-color .15s ease,color .15s ease;
+}
+.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk--video{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.lnk--video:hover{border-color:var(--bad);color:var(--bad);filter:brightness(1.12)}
+.kurse{margin-top:14px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card-2)}
+.kurse__list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.quelle{margin:10px 0 0;font-size:12px;color:var(--muted)}
+
+.review{margin-top:26px;border-top:1px solid var(--line);padding-top:6px}
+.review__item{border-bottom:1px solid var(--line);padding:14px 0}
+.review__top{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+.review__topic{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.review__q{font-weight:650;font-size:15px;margin:0 0 8px}
+.review__a{font-size:13.5px;display:grid;gap:3px}
+.review__a b{font-weight:600}
+.review__mine{color:var(--bad)}
+.review__right{color:var(--ok)}
+.review__e{margin-top:7px;font-size:13.5px;color:var(--muted)}
+.review__empty{padding:16px 0;color:var(--muted)}
+
+.hidden{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
-<body class="bg-body-tertiary">
+<body>
+<div class="wrap">
 
-<nav class="navbar bg-body border-bottom sticky-top">
-  <div class="container">
-    <span class="navbar-brand mb-0 h1 d-flex align-items-center gap-2">
-      <span class="marke">B5</span> Bootstrap-Quiz
-    </span>
-    <div class="d-flex align-items-center gap-2">
-      <span id="bestwert" class="badge text-bg-secondary d-none"></span>
-      <button id="schema" class="btn btn-sm btn-outline-secondary" type="button" title="Hell oder dunkel">☾</button>
+  <header class="masthead">
+    <span class="brand"><span class="brand__dot"></span>Wissenscheck</span>
+    <h1>Bootstrap — wo stehst du?</h1>
+    <p class="sub" id="count">Fragen werden geladen …</p>
+  </header>
+
+  <!-- ===== Start ===== -->
+  <section class="panel" id="start">
+
+    <div class="fieldset">
+      <p class="label">Schwierigkeit</p>
+      <p class="hint">Ein guter Test mischt: leichte Fragen zeigen, ob die Basis sitzt, knifflige zeigen das echte Verständnis.</p>
+      <div class="chips" id="diffs"></div>
     </div>
-  </div>
-</nav>
 
-<main id="app" class="container py-4"></main>
+    <div class="fieldset">
+      <p class="label">Umfang</p>
+      <div class="chips" id="sizes"></div>
+      <p class="vorrat">&#128161; Du startest mit 3 Tipps · ab jeder 10. Frage kommt einer dazu</p>
+    </div>
 
-<footer class="container text-center text-body-secondary small py-4">
-  80 Fragen zu Bootstrap 5.3 · Alle Angaben gegen die offizielle Dokumentation geprüft<br>
-  Läuft ohne Konto und ohne Server – dein Fortschritt bleibt auf diesem Gerät.
-</footer>
+    <div class="fieldset">
+      <button class="disclosure" id="topicToggle" aria-expanded="false">
+        <span class="disclosure__caret">&#9656;</span>
+        <span id="topicSummary">Themen eingrenzen — aktuell alle</span>
+      </button>
+      <div class="topics" id="topicsBox">
+        <div class="topics__inner" id="topics"></div>
+      </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/fragen.js?v=1.0.0"></script>
-<script src="js/app.js?v=1.0.0"></script>
+    <div class="row">
+      <button class="btn" id="go">Test starten</button>
+      <button class="btn btn--ghost" id="all">Alle Themen an/aus</button>
+    </div>
+  </section>
+
+  <!-- ===== Quiz ===== -->
+  <section class="panel hidden" id="quiz">
+    <div class="meta">
+      <span class="meta__left">
+        <span id="pos"></span>
+        <span class="clock" id="clock">00:00</span>
+        <span class="awaybadge hidden" id="awayBadge"></span>
+        <span class="tippbadge hidden" id="tippBadge"></span>
+      </span>
+      <span class="meta__right" id="stats"></span>
+    </div>
+    <div class="meter"><div class="meter__fill" id="fill"></div></div>
+    <p class="topicline" id="topicline"></p>
+    <h2 class="question" id="q"></h2>
+    <pre id="code" class="hidden"></pre>
+
+    <div class="tipprow hidden" id="tipprow">
+      <div class="tipprow__head">
+        <button class="tippbtn" id="tippBtn" type="button">&#128161; Tipp anzeigen</button>
+        <span class="tippneu hidden" id="tippNeu">+1 Tipp freigeschaltet</span>
+      </div>
+      <p class="tipptext hidden" id="tippText"></p>
+    </div>
+
+    <div class="gapbox hidden" id="gapbox">
+      <div class="gapbox__row">
+        <input class="gapbox__input" id="gapInput" type="text" autocomplete="off"
+               autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="Fehlendes Stück hier eintippen …">
+        <button class="btn" id="gapCheck" type="button">Prüfen</button>
+      </div>
+      <p class="gapbox__tipp" id="gapTipp"></p>
+    </div>
+
+    <div class="opts" id="opts"></div>
+    <div class="explain hidden" id="explain"></div>
+    <div class="row">
+      <button class="btn btn--ghost" id="prev" disabled>Zurück</button>
+      <button class="btn" id="next" disabled>Weiter</button>
+      <button class="btn btn--quiet" id="quit">Abbrechen</button>
+    </div>
+    <p class="keyhint" id="keyhint"><kbd>A</kbd>–<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>&larr;</kbd> <kbd>&rarr;</kbd> blättern</p>
+  </section>
+
+  <!-- ===== Ergebnis ===== -->
+  <section class="panel hidden" id="result">
+    <p class="label" id="resultLabel">Auswertung</p>
+    <div class="scorewrap">
+      <div class="ring" id="ring"><span class="ring__num" id="ringNum"></span></div>
+      <div class="scoretext">
+        <p class="level" id="levelName"></p>
+        <p class="leveldesc" id="levelDesc"></p>
+      </div>
+    </div>
+
+    <p class="aborted hidden" id="abortNote"></p>
+    <div class="facts" id="facts"></div>
+    <div class="bars" id="bars"></div>
+    <div class="tippliste hidden" id="tippliste"></div>
+    <div class="gaps hidden" id="gaps"></div>
+
+    <div class="row">
+      <button class="btn" id="again">Neuer Test</button>
+      <button class="btn btn--ghost" id="wrongOnly">Nur Fehler wiederholen</button>
+    </div>
+
+    <div class="review" id="review"></div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   Fragenkatalog
+   d = Schwierigkeit: 1 leicht · 2 mittel · 3 knifflig
+   a = Index der richtigen Antwort (immer 0, Optionen werden gemischt)
+   ========================================================= */
+const QUESTIONS = [
+{g:"Grid & Abstände",t:"Grid & Layout",d:1,q:"Wie viele Spalten hat das Grid von Bootstrap 5?",o:["12","16","10","24"],a:0,tipp:"Die Zahl taucht in Klassen wie .col-6 oder .col-4 als Teiler wieder auf.",e:"Jede <code>.row</code> wird in zwölf gleich breite Spalten geteilt. <code>.col-6</code> nimmt also die halbe Zeile ein."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:1,q:"Welcher Container ist über alle Breakpoints hinweg 100 % breit?",o:[".container-fluid",".container",".container-lg",".container-full"],a:0,tipp:"Das lateinische Wort für fließend steht hinten dran.",e:"<code>.container</code> hat je Breakpoint eine feste Maximalbreite, <code>.container-fluid</code> nutzt immer die volle Breite."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:1,q:"Was passiert, wenn in einer Zeile drei Mal <code>.col</code> ohne Zahl steht?",code:"<div class=\"row\">\n  <div class=\"col\">A</div>\n  <div class=\"col\">B</div>\n  <div class=\"col\">C</div>\n</div>",o:["Jede Spalte bekommt automatisch ein Drittel der Breite","Alle Spalten werden zwölf Einheiten breit","Die Spalten stapeln sich untereinander","Die erste Spalte füllt die ganze Zeile"],a:0,tipp:"Ohne Zahl überlässt man dem Grid die Aufteilung.",e:"<code>.col</code> ohne Zahl teilt den verfügbaren Platz gleichmäßig unter allen Spalten der Zeile auf."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:2,typ:"luecke",q:"Die Spalten sollen ohne Rinnen direkt aneinander liegen. Ergänze die Klasse.",code:"<div class=\"row ▁▁▁\">\n  <div class=\"col\">A</div>\n  <div class=\"col\">B</div>\n</div>",loesung:["g-0",".g-0"],tipp:"Das g steht für gutter, also Rinne.",e:"<code>.g-0</code> setzt die Rinnen auf null. <code>.no-gutters</code> stammt aus Bootstrap 4 und wurde umbenannt."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:2,q:"Was verändert <code>.gx-4</code> an einer Zeile?",o:["Nur den waagerechten Abstand zwischen den Spalten","Nur den senkrechten Abstand","Beide Abstände gleichzeitig","Den Außenabstand der ganzen Zeile"],a:0,tipp:"x ist die waagerechte Achse, y die senkrechte.",e:"<code>.gx-*</code> steuert die waagerechten Rinnen, <code>.gy-*</code> die senkrechten, <code>.g-*</code> beide."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:2,typ:"luecke",q:"Je Zeile sollen genau vier Karten stehen, unabhängig von ihrer Gesamtzahl. Ergänze die Klasse.",code:"<div class=\"row ▁▁▁ g-3\">\n  <div class=\"col\">Karte</div>\n</div>",loesung:["row-cols-4",".row-cols-4"],tipp:"Die Klasse steht auf der Zeile, nicht auf den Spalten.",e:"<code>.row-cols-*</code> legt fest, wie viele Spalten je Zeile stehen – unabhängig davon, wie viele Elemente insgesamt vorhanden sind."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:2,q:"Was bewirkt <code>.offset-md-3</code>?",o:["Ab dem md-Breakpoint rückt die Spalte um drei Spalten ein","Die Spalte wird um drei Einheiten schmaler","Die Spalte springt an die dritte Position","Die Spalte bekommt drei Rem Abstand"],a:0,tipp:"Offset heißt Versatz — es wird links Platz frei gelassen.",e:"Offset schiebt eine Spalte nach rechts, indem es links Platz frei lässt – gerechnet in Grid-Spalten."},
+{g:"Grid & Abstände",t:"Grid & Layout",d:3,q:"Welche Klasse lässt eine Spalte optisch als letzte erscheinen, ohne die Reihenfolge im HTML zu ändern?",o:[".order-last",".float-end",".ms-auto",".align-self-end"],a:0,tipp:"Die Klasse heißt wie das, was sie ändert: die Reihenfolge.",e:"Die <code>.order-*</code>-Klassen ändern nur die Darstellungsreihenfolge. Das HTML bleibt in der Reihenfolge, die inhaltlich sinnvoll ist – wichtig für Screenreader."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:1,q:"Welchen Wert hat <code>.mt-3</code> standardmäßig?",o:["1rem","3rem","0,75rem","3px"],a:0,tipp:"Die Skala geht von 0 bis 5. Stufe 3 ist genau der Grundwert.",e:"Die Skala ist ein Vielfaches von <code>$spacer</code> (Standard 1rem): 1 = 0,25rem · 2 = 0,5rem · 3 = 1rem · 4 = 1,5rem · 5 = 3rem."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:1,q:"Wofür steht das <code>p</code> in <code>.p-2</code>?",o:["padding","position","primary","pull"],a:0,tipp:"m wäre der Abstand nach außen — gesucht ist das Gegenstück nach innen.",e:"<code>m</code> steht für margin, <code>p</code> für padding. Danach folgt die Seite und zuletzt die Stufe."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:1,typ:"luecke",q:"Die Karte hat eine feste Breite und soll waagerecht mittig sitzen. Ergänze die Klasse.",code:"<div class=\"card ▁▁▁\" style=\"width: 18rem;\">…</div>",loesung:["mx-auto",".mx-auto"],tipp:"x steht für links und rechts zusammen, der Wert überlässt dem Browser die Rechnung.",e:"<code>.mx-auto</code> setzt links und rechts <code>margin: auto</code>. <code>.text-center</code> zentriert dagegen nur den Inhalt."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:2,q:"Was setzt <code>.ms-3</code> in einer Sprache, die von links nach rechts gelesen wird?",o:["margin-left","margin-right","margin-top","So eine Klasse gibt es nicht"],a:0,tipp:"s steht für start — in Leserichtung von links nach rechts also eine bestimmte Seite.",e:"<code>s</code> steht für <em>start</em>, <code>e</code> für <em>end</em>. In einer rechtsläufigen Sprache wird daraus automatisch margin-right – das ist der Grund für die Umbenennung in Bootstrap 5."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:2,q:"Welcher ist der größte Wert der Standard-Abstandsskala?",o:[".p-5",".p-6",".p-10",".p-max"],a:0,tipp:"Die Skala hat sechs Stufen und beginnt bei 0.",e:"Die Skala reicht von 0 bis 5. <code>.p-5</code> entspricht dem Dreifachen von <code>$spacer</code>, also 3rem."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:2,typ:"luecke",q:"Die Karte soll die volle Höhe ihres Elternelements einnehmen. Ergänze die Klasse.",code:"<div class=\"card ▁▁▁\">…</div>",loesung:["h-100",".h-100"],tipp:"h steht für height, die Zahl ist ein Prozentwert.",e:"<code>.h-100</code> entspricht <code>height: 100%</code>. <code>.vh-100</code> bezieht sich dagegen auf die Höhe des sichtbaren Fensters."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:3,q:"Was macht <code>.gap-3</code> – und wo wirkt es?",o:["Es setzt den Abstand zwischen Flex- oder Grid-Elementen","Es setzt Außenabstand an allen vier Seiten","Es setzt die Rinnen einer <code>.row</code>","Es setzt Innenabstand oben und unten"],a:0,tipp:"Es ist dieselbe Eigenschaft, die man aus CSS bei Flexbox und Grid kennt.",e:"<code>.gap-*</code> nutzt die CSS-Eigenschaft <code>gap</code> und wirkt nur in einem Flex- oder Grid-Container – anders als <code>.g-*</code>, das zum Grid von Bootstrap gehört."},
+{g:"Grid & Abstände",t:"Abstände & Größen",d:3,q:"Wie fügst du der Abstandsskala einen eigenen Wert hinzu?",code:"$spacers: map-merge($spacers, (6: $spacer * 4));",o:["Die Sass-Map <code>$spacers</code> erweitern","Die Variable <code>$spacer-6</code> setzen","Eine Klasse <code>.p-6</code> ins eigene CSS schreiben","Gar nicht, die Skala ist fest"],a:0,tipp:"Die Abstandsskala liegt als Sass-Map vor und lässt sich erweitern.",e:"Ein zusätzlicher Eintrag in <code>$spacers</code> erzeugt automatisch alle passenden Klassen – also <code>.m-6</code>, <code>.pt-6</code> und so weiter."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:1,typ:"luecke",q:"Der Absatz soll fett erscheinen. Ergänze die Klasse.",code:"<p class=\"▁▁▁\">Wichtiger Hinweis</p>",loesung:["fw-bold",".fw-bold"],tipp:"fw steht für font-weight.",e:"In Bootstrap 5 heißt sie <code>.fw-bold</code> (font weight). <code>.font-weight-bold</code> war Bootstrap 4."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:1,q:"Womit richtest du Text am Zeilenanfang aus?",o:[".text-start",".text-left",".align-left",".text-begin"],a:0,tipp:"Bootstrap 5 spricht nicht mehr von links und rechts, sondern von Anfang und Ende.",e:"Wie bei den Abständen wurde auch hier auf <em>start</em> und <em>end</em> umgestellt, damit rechtsläufige Sprachen ohne Zusatzarbeit funktionieren."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:1,typ:"luecke",q:"Der Kasten soll den Hintergrund der Primärfarbe bekommen. Ergänze die Klasse.",code:"<div class=\"p-3 text-white ▁▁▁\">Hinweis</div>",loesung:["bg-primary",".bg-primary"],tipp:"bg steht für background, dahinter folgt der Name der Farbrolle.",e:"Zu jeder Farbe der Palette gibt es <code>.bg-*</code> für den Hintergrund und <code>.text-*</code> für die Schrift."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:2,q:"Welche Klasse macht Text kursiv?",o:[".fst-italic",".font-italic",".text-italic",".italic"],a:0,tipp:"fst steht für font-style.",e:"<code>fst</code> steht für font style. <code>.font-italic</code> war die Schreibweise in Bootstrap 4."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:2,q:"Was ist der Vorteil von <code>.text-bg-success</code> gegenüber <code>.bg-success</code>?",o:["Die Textfarbe wird passend zum Hintergrund mitgesetzt","Der Hintergrund wird dunkler","Es funktioniert auch ohne eingebundenes CSS","Es setzt zusätzlich einen Rahmen"],a:0,tipp:"Der Klassenname nennt beides, was dabei gesetzt wird.",e:"<code>.text-bg-*</code> setzt Hintergrund und eine dazu gut lesbare Schriftfarbe in einem Schritt – man muss nicht selbst entscheiden, ob heller oder dunkler Text passt."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:2,q:"Welche Klasse sorgt dafür, dass ein Text nicht umbricht?",o:[".text-nowrap",".text-truncate",".d-inline",".text-block"],a:0,tipp:"Die Klasse heißt wie der CSS-Wert, der den Umbruch verbietet.",e:"<code>.text-nowrap</code> setzt <code>white-space: nowrap</code>. Der Text läuft dann gegebenenfalls über das Element hinaus."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:3,q:"Welche Klasse kürzt einen zu langen Text mit drei Punkten ab?",o:[".text-truncate",".text-ellipsis",".text-nowrap",".overflow-hidden"],a:0,tipp:"Das englische Wort für abschneiden.",e:"<code>.text-truncate</code> kombiniert overflow, white-space und text-overflow. Das Element braucht dafür eine begrenzte Breite, sonst greift es nicht."},
+{g:"Aussehen & Komponenten",t:"Typografie & Farben",d:3,q:"Wie schaltest du in Bootstrap 5.3 einen Bereich auf das dunkle Farbschema um?",code:"<html data-bs-theme=\"dark\">\n\n<div data-bs-theme=\"light\">nur hier hell</div>",o:["Mit dem Attribut <code>data-bs-theme=\"dark\"</code>","Mit der Klasse <code>.dark-mode</code>","Mit der Klasse <code>.bg-dark</code>","Nur über eine eigene CSS-Datei"],a:0,tipp:"Es ist keine Klasse, sondern ein Attribut mit dem üblichen bs-Präfix.",e:"Das Attribut lässt sich auf <code>&lt;html&gt;</code> setzen oder auf einen einzelnen Bereich – dann gilt das Schema nur dort."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:1,typ:"luecke",q:"Aus dem Knopf soll eine gefüllte Schaltfläche in der Primärfarbe werden. Ergänze beide Klassen.",code:"<button type=\"submit\" class=\"▁▁▁\">Senden</button>",loesung:["btn btn-primary"],tipp:"Es braucht zwei Klassen: die Grundform und die Farbrolle.",e:"<code>.btn</code> bringt Form und Abstände, die zweite Klasse die Farbe. Beide zusammen ergeben die Schaltfläche."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:1,typ:"luecke",q:"Der Knopf soll statt gefüllt nur einen farbigen Umriss haben. Ergänze die zweite Klasse.",code:"<button class=\"btn ▁▁▁\">Mehr erfahren</button>",loesung:["btn-outline-primary",".btn-outline-primary"],tipp:"Das englische Wort für Umriss steht in der Mitte des Klassennamens.",e:"Für jede Farbe der Palette gibt es eine gefüllte und eine Umriss-Variante."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:1,q:"Welche Klassen bilden das Grundgerüst einer Karte?",o:["<code>.card</code>, <code>.card-body</code>, <code>.card-title</code>","<code>.card</code>, <code>.card-inner</code>, <code>.card-head</code>","<code>.panel</code>, <code>.panel-body</code>, <code>.panel-title</code>","<code>.card</code>, <code>.content</code>, <code>.title</code>"],a:0,tipp:"Alle drei Klassen beginnen mit demselben Wort.",e:"<code>.panel</code> war Bootstrap 3. Seit Bootstrap 4 heißt das Bauteil Karte."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:2,q:"Ab welcher Breite klappt <code>.navbar-expand-lg</code> die Navigation auf?",o:["Ab 992 px","Ab 768 px","Ab 1200 px","Ab 576 px"],a:0,tipp:"Es ist genau die Grenze des Breakpoints lg.",e:"<code>lg</code> steht für 992 px. Darunter bleibt die Navigation hinter der Schaltfläche eingeklappt."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:2,q:"Welches Bauteil ersetzt in Bootstrap 5 die aus Karten gebaute Ziehharmonika von Bootstrap 4?",o:["Ein eigenes <code>accordion</code>-Bauteil","Das <code>collapse</code>-Bauteil","Das <code>offcanvas</code>-Bauteil","Die <code>list-group</code>"],a:0,tipp:"Bootstrap 5 hat dafür ein eigenes Bauteil bekommen, benannt nach einem Musikinstrument.",e:"Bootstrap 5 bringt dafür ein eigenes Bauteil mit – vorher musste man es aus Karten und <code>collapse</code> zusammensetzen."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:2,q:"Welches Bauteil schiebt einen Bereich von der Seite ins Bild und ist neu in Bootstrap 5?",o:["Offcanvas","Modal","Drawer","Sidebar"],a:0,tipp:"Der Name beschreibt, wo das Element vorher liegt: außerhalb der Leinwand.",e:"Offcanvas eignet sich für Navigationen und Filter auf kleinen Bildschirmen."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:3,q:"Welche Klasse macht eine ganze Karte klickbar, wenn darin ein Link liegt?",o:[".stretched-link",".card-link",".link-full",".d-block"],a:0,tipp:"Der Link wird gedehnt, bis er die ganze Karte abdeckt.",e:"Der Link wird über das nächstgelegene Elternelement mit <code>position: relative</code> gezogen – bei einer Karte ist das die Karte selbst."},
+{g:"Aussehen & Komponenten",t:"Komponenten",d:3,q:"Welches Bauteil wurde in Bootstrap 5 ersatzlos gestrichen?",o:["Jumbotron","Karte","Alarm","Fortschrittsbalken"],a:0,tipp:"Der große Kasten für die Kopfzeile aus Bootstrap 3 und 4.",e:"Der Jumbotron lässt sich mit Hilfsklassen nachbauen. Ebenfalls gestrichen wurden <code>.card-deck</code> und das Media-Objekt."},
+{g:"Formulare & Flex",t:"Formulare",d:1,typ:"luecke",q:"Das Eingabefeld soll das Aussehen von Bootstrap bekommen. Ergänze die Klasse.",code:"<input type=\"text\" class=\"▁▁▁\" id=\"name\">",loesung:["form-control",".form-control"],tipp:"Eingabefelder und Textbereiche bekommen dieselbe Klasse.",e:"<code>.form-control</code> gilt für Textfelder, Textbereiche und Dateifelder gleichermaßen."},
+{g:"Formulare & Flex",t:"Formulare",d:1,typ:"luecke",q:"Die Auswahlliste soll das Aussehen von Bootstrap bekommen. Ergänze die Klasse.",code:"<select class=\"▁▁▁\">\n  <option>Eins</option>\n</select>",loesung:["form-select",".form-select"],tipp:"Der zweite Teil der Klasse ist der Name des HTML-Elements.",e:"In Bootstrap 4 hieß es noch <code>.custom-select</code>. Bootstrap 5 hat die eigene und die Standardvariante zu einer Klasse zusammengeführt."},
+{g:"Formulare & Flex",t:"Formulare",d:2,q:"Welche Klasse ist in Bootstrap 5 an jedem <code>&lt;label&gt;</code> eines Formulars nötig?",code:"<label for=\"mail\" class=\"form-label\">E-Mail</label>\n<input type=\"email\" class=\"form-control\" id=\"mail\">",o:[".form-label",".control-label",".label","Gar keine"],a:0,tipp:"Der zweite Teil der Klasse ist der Name des HTML-Elements.",e:"Ohne <code>.form-label</code> fehlen dem Beschriftungstext die Abstände. In Bootstrap 4 war das noch nicht nötig."},
+{g:"Formulare & Flex",t:"Formulare",d:2,q:"Wie baust du in Bootstrap 5 einen Kippschalter?",o:["<code>.form-check</code> zusammen mit <code>.form-switch</code>","Mit <code>.custom-switch</code>","Mit <code>.toggle</code>","Mit <code>.switch-control</code>"],a:0,tipp:"Es braucht zwei Klassen: die für Ankreuzfelder und eine zusätzliche.",e:"Der Kippschalter ist ein Ankreuzfeld mit anderer Darstellung – deshalb bleibt <code>.form-check</code> die Grundlage."},
+{g:"Formulare & Flex",t:"Formulare",d:2,q:"Welche Klassen wurden in Bootstrap 5 ersatzlos gestrichen?",o:["<code>.form-group</code>, <code>.form-row</code> und <code>.form-inline</code>","<code>.form-control</code> und <code>.form-label</code>","<code>.form-check</code> und <code>.form-select</code>","<code>.input-group</code> und <code>.form-text</code>"],a:0,tipp:"Sie wurden durch das normale Grid und die Abstandsklassen ersetzt.",e:"Für das Layout von Formularen nutzt man jetzt das normale Grid und die Abstands-Hilfsklassen."},
+{g:"Formulare & Flex",t:"Formulare",d:3,q:"Welche Klasse markiert ein Feld als fehlerhaft?",o:[".is-invalid",".has-error",".invalid",".form-error"],a:0,tipp:"Die Klasse beschreibt einen Zustand und beginnt mit is.",e:"Das Gegenstück heißt <code>.is-valid</code>. Beide lassen sich auch ohne die eingebaute Prüfung setzen."},
+{g:"Formulare & Flex",t:"Formulare",d:3,q:"Wo muss <code>.invalid-feedback</code> stehen, damit es sichtbar wird?",o:["Als Geschwisterelement direkt nach dem Feld","Als Elternelement des Feldes","Irgendwo im Formular","Innerhalb des <code>&lt;input&gt;</code>"],a:0,tipp:"Die Anzeige hängt an einem CSS-Geschwisterselektor.",e:"Die Meldung wird über einen Geschwister-Selektor eingeblendet. Liegt sie woanders, bleibt sie unsichtbar."},
+{g:"Formulare & Flex",t:"Formulare",d:3,q:"Welche Klasse am <code>&lt;form&gt;</code> schaltet die Anzeige der Prüfergebnisse frei?",o:[".was-validated",".needs-validation",".validate",".is-validated"],a:0,tipp:"Die Klasse steht in der Vergangenheitsform.",e:"<code>.needs-validation</code> unterdrückt zunächst die Meldungen des Browsers. Beim Absenden ergänzt eigenes JavaScript <code>.was-validated</code> – erst dann werden die Rückmeldungen sichtbar."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:1,typ:"luecke",q:"Aus dem Container soll ein Flex-Container werden. Ergänze die Klasse.",code:"<div class=\"▁▁▁\">\n  <span>A</span>\n  <span>B</span>\n</div>",loesung:["d-flex",".d-flex"],tipp:"d steht für display.",e:"Die <code>.d-*</code>-Klassen setzen die CSS-Eigenschaft <code>display</code> – daneben gibt es etwa <code>.d-block</code> und <code>.d-none</code>."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:1,typ:"luecke",q:"Logo links, Menü rechts, der freie Platz dazwischen. Ergänze die Klasse.",code:"<div class=\"d-flex ▁▁▁\">\n  <span>Logo</span>\n  <span>Menü</span>\n</div>",loesung:["justify-content-between",".justify-content-between"],tipp:"Die Klassen übernehmen die Namen der CSS-Werte.",e:"Bootstrap übernimmt hier die Namen aus CSS: between, around, evenly, start, end, center."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:2,typ:"luecke",q:"Die Flex-Elemente sollen untereinander statt nebeneinander stehen. Ergänze die Klasse.",code:"<div class=\"d-flex ▁▁▁\">…</div>",loesung:["flex-column",".flex-column"],tipp:"Der zweite Teil ist der CSS-Wert für die Richtung.",e:"Dazu gibt es <code>.flex-row</code> für die Zeile und beides auch je Breakpoint, etwa <code>.flex-md-row</code>."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:2,q:"Welche Achse steuert <code>.align-items-center</code> bei einer Flex-Zeile?",o:["Die senkrechte","Die waagerechte","Beide","Keine, es zentriert nur den Text"],a:0,tipp:"align-items arbeitet immer auf der Querachse.",e:"<code>align-items</code> wirkt quer zur Hauptachse. Bei einer Zeile ist das die senkrechte Achse, bei einer Spalte die waagerechte."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:2,q:"Welche Klassen blenden ein Element unterhalb von md aus und zeigen es ab md?",o:["<code>.d-none .d-md-block</code>","<code>.d-md-none</code>","<code>.hidden-sm</code>","<code>.d-block-md</code>"],a:0,tipp:"Es braucht zwei Klassen: erst ausblenden, dann ab dem Breakpoint wieder einblenden.",e:"Bootstrap arbeitet von klein nach groß: erst der Grundzustand, dann die Ausnahme ab dem Breakpoint."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:3,typ:"luecke",q:"Nur das zweite Element soll ganz nach rechts rutschen. Ergänze die Klasse.",code:"<div class=\"d-flex\">\n  <span>Logo</span>\n  <span class=\"▁▁▁\">Rechts</span>\n</div>",loesung:["ms-auto",".ms-auto"],tipp:"Ein automatischer Außenabstand auf einer Seite schiebt das Element weg.",e:"<code>.ms-auto</code> gibt nur diesem Element einen automatischen Abstand am Anfang – die anderen bleiben stehen. <code>.justify-content-end</code> würde dagegen alle verschieben."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:3,q:"Was ist der Unterschied zwischen <code>.hstack</code> und <code>.d-flex</code>?",o:["<code>.hstack</code> bringt zusätzlich Ausrichtung und volle Breite mit","Es ist nur eine andere Schreibweise","<code>.hstack</code> arbeitet ohne Flexbox","<code>.hstack</code> gibt es nur in Formularen"],a:0,tipp:"Die eine Klasse ist eine fertige Zusammenstellung, die andere nur display: flex.",e:"<code>.hstack</code> entspricht <code>display:flex</code> mit <code>align-items:center</code> und voller Breite. <code>.vstack</code> ist das senkrechte Gegenstück."},
+{g:"Formulare & Flex",t:"Flex & Ausrichtung",d:3,q:"Welche Klasse zentriert ein absolut positioniertes Element genau auf seinem Bezugspunkt?",code:"<div class=\"position-relative\">\n  <span class=\"position-absolute top-0 start-100 translate-middle badge\">9</span>\n</div>",o:[".translate-middle",".position-center",".m-auto",".align-middle"],a:0,tipp:"Die Klasse verschiebt das Element um die Hälfte seiner eigenen Größe.",e:"<code>.translate-middle</code> verschiebt das Element um die Hälfte seiner eigenen Breite und Höhe – üblich für Abzeichen an einer Ecke."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:1,q:"Welche Bibliothek braucht Bootstrap 5 nicht mehr?",o:["jQuery","Popper","Sass","Autoprefixer"],a:0,tipp:"Bootstrap 5 kommt mit reinem JavaScript aus.",e:"Bootstrap 5 hat jQuery abgelegt und ist auf reines JavaScript umgestiegen. Popper wird weiterhin gebraucht."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:1,typ:"luecke",q:"Beide Attribute brauchen dasselbe Präfix. Ergänze es.",code:"<button ▁▁▁toggle=\"modal\" ▁▁▁target=\"#dialog\">Öffnen</button>",loesung:["data-bs-"],tipp:"Zwischen data und dem Namen steht das Kürzel des Frameworks.",e:"Das zusätzliche <code>bs</code> verhindert Zusammenstöße mit anderen Bibliotheken. Beim Umstieg von Bootstrap 4 muss jedes Attribut angepasst werden."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:1,q:"Wofür ist Popper in Bootstrap zuständig?",o:["Für das Positionieren von Dropdowns, Tooltips und Popovern","Für das Anzeigen von Modals","Für das Umschalten des Farbschemas","Für das Übersetzen von Sass"],a:0,tipp:"Es geht um Elemente, die neben oder unter einem anderen aufklappen.",e:"Popper sorgt dafür, dass eingeblendete Elemente im sichtbaren Bereich bleiben und nicht am Fensterrand abgeschnitten werden."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:2,q:"Welche Datei enthält Bootstrap und Popper zusammen?",o:["bootstrap.bundle.min.js","bootstrap.min.js","bootstrap.all.min.js","popper.bundle.js"],a:0,tipp:"Das englische Wort für Bündel steckt im Dateinamen.",e:"Wer <code>bootstrap.min.js</code> einbindet, muss Popper getrennt laden – sonst bleiben Dropdowns und Tooltips wirkungslos."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:2,q:"Welche Bauteile lassen sich nicht allein über Datenattribute nutzen, sondern müssen in JavaScript erzeugt werden?",code:"document.querySelectorAll('[data-bs-toggle=\"tooltip\"]')\n  .forEach(el => new bootstrap.Tooltip(el));",o:["Tooltips und Popover","Modal und Dropdown","Collapse und Tab","Alarm und Toast"],a:0,tipp:"Beide müssen aus Sicherheitsgründen bewusst aktiviert werden.",e:"Beide sind aus Geschwindigkeitsgründen nicht von vornherein aktiv. Man erzeugt sie einmal je Element."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:2,q:"Wie öffnest du ein Modal aus eigenem JavaScript heraus?",o:["<code>new bootstrap.Modal(el).show()</code>","<code>$(el).modal('show')</code>","<code>el.showModal()</code>","<code>bootstrap.open(el)</code>"],a:0,tipp:"Erst eine Instanz erzeugen, dann die Methode zum Anzeigen aufrufen.",e:"Die zweite Zeile wäre die alte Schreibweise mit jQuery – die gibt es in Bootstrap 5 nicht mehr."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:3,q:"Welches Ereignis feuert, nachdem ein Modal vollständig sichtbar ist?",o:["shown.bs.modal","show.bs.modal","open.bs.modal","modal.shown"],a:0,tipp:"Bootstrap unterscheidet „wird gerade gezeigt“ von „ist fertig gezeigt“.",e:"Bootstrap unterscheidet durchgängig: <code>show</code> startet den Vorgang, <code>shown</code> meldet ihn als abgeschlossen. Dasselbe gilt für <code>hide</code> und <code>hidden</code>."},
+{g:"JavaScript & Breakpoints",t:"JavaScript-Bauteile",d:3,q:"Wie holst du dir eine bereits erzeugte Instanz eines Bauteils?",o:["<code>bootstrap.Modal.getInstance(el)</code>","<code>bootstrap.Modal.find(el)</code>","<code>el.bsInstance</code>","<code>new bootstrap.Modal(el)</code>"],a:0,tipp:"Die Methode holt eine vorhandene Instanz, statt eine neue zu bauen.",e:"Ein erneutes <code>new</code> würde eine zweite Instanz anlegen. <code>getOrCreateInstance</code> gibt es ebenfalls, wenn man beides in einem Schritt möchte."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:1,q:"Ab welcher Breite greift der Breakpoint <code>md</code>?",o:["768 px","576 px","992 px","720 px"],a:0,tipp:"Die fünf Breakpoints lauten 576, 768, 992, 1200 und 1400.",e:"Die Reihe lautet: sm 576 · md 768 · lg 992 · xl 1200 · xxl 1400."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:1,q:"Welchen Breakpoint schreibt man in einer Klasse nicht mit?",o:["xs","sm","xl","xxl"],a:0,tipp:"Der kleinste Breakpoint ist die Vorgabe und braucht kein Kürzel.",e:"<code>xs</code> ist der Ausgangszustand ohne Medienabfrage – deshalb heißt es <code>.col-6</code> und nicht <code>.col-xs-6</code>."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:1,q:"Welches Meta-Element gehört in den <code>&lt;head&gt;</code>, damit Bootstrap auf dem Handy richtig arbeitet?",code:"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",o:["viewport","charset","description","responsive"],a:0,tipp:"Ohne dieses Meta-Element zoomt das Handy die ganze Seite heraus.",e:"Ohne diese Zeile stellt das Handy die Seite in einer angenommenen Desktop-Breite dar und verkleinert sie – die Breakpoints greifen dann nicht wie gedacht."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:2,q:"Was bedeutet <code>.col-md-6</code>?",o:["Ab 768 px sechs von zwölf Spalten, darunter volle Breite","Genau bei 768 px sechs Spalten","Bis 768 px sechs Spalten","Immer sechs Spalten"],a:0,tipp:"Unterhalb des genannten Breakpoints gilt immer die volle Breite.",e:"Bootstrap arbeitet von klein nach groß: eine Breakpoint-Klasse gilt ab dieser Breite aufwärts."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:2,q:"Wie breit ist der Breakpoint <code>xxl</code>?",o:["1400 px","1200 px","1600 px","1440 px"],a:0,tipp:"Es ist der größte der fünf Breakpoints.",e:"<code>xxl</code> kam mit Bootstrap 5 dazu – in Bootstrap 4 endete die Reihe bei <code>xl</code>."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:2,q:"Welche Klassen zeigen ein Element nur auf kleinen Bildschirmen?",o:["<code>.d-block .d-md-none</code>","<code>.d-none .d-md-block</code>","<code>.d-sm-only</code>","<code>.visible-xs</code>"],a:0,tipp:"Erst anzeigen, dann ab dem Breakpoint wieder ausblenden.",e:"Erst der Grundzustand sichtbar, dann ab md ausblenden. <code>.visible-xs</code> stammt aus Bootstrap 3."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:3,typ:"luecke",q:"Das Bild soll nie breiter werden als sein Elternelement. Ergänze die Klasse.",code:"<img src=\"bild.jpg\" class=\"▁▁▁\" alt=\"Beispiel\">",loesung:["img-fluid",".img-fluid"],tipp:"Die Klasse setzt max-width auf 100 Prozent und die Höhe auf auto.",e:"<code>.img-fluid</code> setzt <code>max-width: 100%</code> und <code>height: auto</code>, das Seitenverhältnis bleibt also erhalten. <code>.img-responsive</code> war Bootstrap 3."},
+{g:"JavaScript & Breakpoints",t:"Breakpoints",d:3,q:"Welcher Helfer hält ein eingebettetes Video im Seitenverhältnis 16:9?",code:"<div class=\"ratio ratio-16x9\">\n  <iframe src=\"…\"></iframe>\n</div>",o:["<code>.ratio .ratio-16x9</code>","<code>.embed-responsive .embed-responsive-16by9</code>","<code>.aspect-16x9</code>","<code>.video-16x9</code>"],a:0,tipp:"Zwei Klassen: eine Grundklasse und eine für das Verhältnis.",e:"<code>.embed-responsive</code> war die Schreibweise aus Bootstrap 4 und wurde zu <code>.ratio</code> gekürzt."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:1,q:"Wie bindest du Bootstrap am schnellsten ohne Bauwerkzeuge ein?",o:["Über eine CSS- und eine JS-Datei vom CDN","Nur über npm","Nur mit einem Sass-Compiler","Über einen PHP-Server"],a:0,tipp:"Zwei Zeilen im HTML reichen, ganz ohne Installation.",e:"Zwei Zeilen genügen: das Stylesheet in den <code>&lt;head&gt;</code>, das Bundle-Skript ans Ende des <code>&lt;body&gt;</code>."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:1,q:"Woraus bestehen Farbklassen wie <code>.bg-primary</code> in Bootstrap 5.3 technisch?",o:["Aus CSS-Variablen, die sich zur Laufzeit ändern lassen","Aus fest eingetragenen Farbwerten","Aus Sass-Variablen, die der Browser auswertet","Aus Inline-Stilen"],a:0,tipp:"Seit 5.3 lassen sich die Farben zur Laufzeit umschalten.",e:"Seit 5.3 stecken die Farben in CSS-Variablen wie <code>--bs-primary</code>. Deshalb funktionieren die Farbschemata ohne einen zweiten Satz Klassen."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:2,q:"Wo müssen eigene Sass-Variablen stehen, damit sie greifen?",code:"$primary: #6f42c1;\n$spacer: 1.25rem;\n@import \"bootstrap/scss/bootstrap\";",o:["Vor dem Import von Bootstrap","Nach dem Import von Bootstrap","In einer eigenen CSS-Datei","In der index.html"],a:0,tipp:"Sass nimmt den zuerst gesetzten Wert, wenn Variablen als !default markiert sind.",e:"Bootstrap definiert seine Variablen mit <code>!default</code>. Ein vorher gesetzter eigener Wert bleibt deshalb stehen."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:2,q:"Welche Sass-Variable steuert die Grundgröße der Abstandsskala?",o:["$spacer","$spacing","$gap","$base-space"],a:0,tipp:"Der Name steht in der Einzahl und ist der Grundwert der ganzen Skala.",e:"Änderst du <code>$spacer</code>, verschiebt sich die gesamte Skala von <code>.m-1</code> bis <code>.p-5</code> mit."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:2,q:"Welchen Sass-Compiler nutzt Bootstrap 5?",o:["Dart Sass","Libsass","Ruby Sass","node-sass"],a:0,tipp:"Der alte Compiler in C wird seit Jahren nicht mehr gepflegt.",e:"Bootstrap 5 ist von Libsass auf Dart Sass gewechselt, weil Libsass nicht mehr weiterentwickelt wird."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:3,q:"Wie fügst du der Palette eine eigene benannte Farbe hinzu?",code:"$theme-colors: map-merge($theme-colors, (\n  \"marke\": #e4572e\n));",o:["Die Map <code>$theme-colors</code> per <code>map-merge</code> erweitern","Eine Klasse <code>.bg-meinefarbe</code> schreiben","Die Variable <code>$custom-color</code> setzen","Gar nicht möglich"],a:0,tipp:"Die Palette ist eine Sass-Map und wird mit einer Map-Funktion zusammengeführt.",e:"Danach erzeugt Bootstrap dafür automatisch <code>.bg-*</code>, <code>.text-*</code>, <code>.btn-*</code> und weitere Klassen."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:3,q:"Wofür stehen die Variablen, die mit <code>$enable-</code> beginnen?",o:["Sie schalten ganze Gestaltungsmerkmale an oder ab, etwa Schatten oder runde Ecken","Sie aktivieren einzelne Bauteile","Sie schalten JavaScript frei","Sie steuern die Breakpoints"],a:0,tipp:"Der Name sagt es bereits: Etwas wird ein- oder ausgeschaltet.",e:"Beispiele sind <code>$enable-shadows</code>, <code>$enable-rounded</code> und <code>$enable-gradients</code>. Damit lässt sich die Gestaltung grundlegend umstellen, ohne einzelne Regeln zu überschreiben."},
+{g:"Anpassen & Umstieg",t:"Anpassen & Sass",d:3,q:"Wie hältst du die erzeugte CSS-Datei klein, wenn du nur wenige Teile brauchst?",o:["Nur die benötigten Sass-Dateien einzeln importieren","Die fertige CSS-Datei von Hand kürzen","Bootstrap über das CDN laden","Die Datei komprimieren"],a:0,tipp:"Man lädt nicht die Sammeldatei, sondern nur die gebrauchten Teile.",e:"Man bindet zuerst die Pflichtteile ein – Funktionen, Variablen, Mixins – und danach nur die Bauteile, die man wirklich verwendet."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:1,typ:"luecke",q:"Wie heißt diese Klasse in Bootstrap 5? Ergänze sie.",code:"<!-- Bootstrap 4: class=\"ml-3\" -->\n<div class=\"▁▁▁\">Text</div>",loesung:["ms-3",".ms-3"],tipp:"Aus left wurde start.",e:"Links und rechts wurden zu Anfang und Ende – damit funktionieren dieselben Klassen auch in rechtsläufigen Sprachen."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:1,typ:"luecke",q:"Wie heißt diese Klasse in Bootstrap 5? Ergänze sie.",code:"<!-- Bootstrap 4: class=\"text-right\" -->\n<p class=\"▁▁▁\">Text</p>",loesung:["text-end",".text-end"],tipp:"Aus right wurde end.",e:"Dieselbe Umstellung wie bei den Abständen: <code>.text-left</code> wurde zu <code>.text-start</code>."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:2,typ:"luecke",q:"Wie heißt diese Klasse in Bootstrap 5? Ergänze sie.",code:"<!-- Bootstrap 4: class=\"sr-only\" -->\n<span class=\"▁▁▁\">Menü öffnen</span>",loesung:["visually-hidden",".visually-hidden"],tipp:"Der neue Name sagt, für wen es verborgen ist: fürs Auge, nicht für den Screenreader.",e:"Der neue Name sagt, was passiert: sichtbar versteckt, aber für Screenreader weiterhin da. Dazu gibt es <code>.visually-hidden-focusable</code>."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:2,q:"Was wurde aus der Klasse <code>.close</code> am Schließen-Kreuz?",o:[".btn-close",".close-btn",".btn-dismiss","Sie bleibt <code>.close</code>"],a:0,tipp:"Das Schließen-Kreuz gilt jetzt als Schaltfläche.",e:"Der Name war zu allgemein. Das Kreuz ist jetzt außerdem ein Hintergrundbild statt eines Textzeichens."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:2,q:"Was wurde aus <code>.custom-select</code>?",o:[".form-select",".select-control",".form-control-select","Es bleibt <code>.custom-select</code>"],a:0,tipp:"Die Klasse heißt jetzt wie das HTML-Element, auf dem sie sitzt.",e:"Bootstrap 5 hat die eigenen Formularelemente und die Standardelemente zusammengeführt – deshalb fielen alle <code>.custom-*</code>-Klassen weg."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:3,q:"Was wurde aus <code>.card-deck</code>?",o:["Ersatzlos gestrichen – stattdessen Grid mit <code>.row-cols-*</code>",".card-group",".card-grid",".deck"],a:0,tipp:"Bootstrap 5 löst das über das Grid statt über ein eigenes Bauteil.",e:"Karten in gleicher Höhe nebeneinander erreicht man jetzt über das Grid, das ohnehin flexibler ist."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:3,q:"Welche Abhängigkeit hat Bootstrap 5 aufgegeben, und was geschah mit Popper?",o:["jQuery fiel weg, Popper ging auf Version 2","Popper fiel weg, jQuery blieb","Beide fielen weg","jQuery blieb, Popper ging auf Version 3"],a:0,tipp:"Eine Abhängigkeit fiel ganz weg, die andere bekam eine neue Hauptversion.",e:"Dazu kam der Wechsel des Sass-Compilers von Libsass auf Dart Sass."},
+{g:"Anpassen & Umstieg",t:"Umstieg von 4 auf 5",d:3,q:"Welche Klassen gelten in Bootstrap 5.3 als überholt, weil die Farbschemata sie ersetzen?",o:["<code>.navbar-dark</code> und <code>.dropdown-menu-dark</code>","<code>.bg-dark</code> und <code>.text-white</code>","<code>.btn-dark</code> und <code>.card-dark</code>","<code>.table-dark</code> und <code>.list-group-dark</code>"],a:0,tipp:"Seit 5.3 regelt ein Attribut das Farbschema für ganze Bereiche.",e:"Statt einzelner dunkler Varianten setzt man <code>data-bs-theme=\"dark\"</code> auf den Bereich. Ebenfalls überholt: <code>.btn-close-white</code> und <code>.carousel-dark</code>."}
+];
+
+/* =========================================================
+   Logik
+   ========================================================= */
+/* Lernmaterial je Thema: Suchbegriff für ein Video + passende Referenzseite */
+const LERNSTOFF = {
+ "Grid & Layout": {
+  "doc": "https://getbootstrap.com/docs/5.3/layout/grid/",
+  "yt": "Bootstrap Grid System"
+ },
+ "Abstände & Größen": {
+  "doc": "https://getbootstrap.com/docs/5.3/utilities/spacing/",
+  "yt": "Bootstrap Abstände margin padding"
+ },
+ "Typografie & Farben": {
+  "doc": "https://getbootstrap.com/docs/5.3/utilities/text/",
+  "yt": "Bootstrap Text und Farben"
+ },
+ "Komponenten": {
+  "doc": "https://getbootstrap.com/docs/5.3/components/card/",
+  "yt": "Bootstrap Komponenten Card Navbar"
+ },
+ "Formulare": {
+  "doc": "https://getbootstrap.com/docs/5.3/forms/overview/",
+  "yt": "Bootstrap Formulare"
+ },
+ "Flex & Ausrichtung": {
+  "doc": "https://getbootstrap.com/docs/5.3/utilities/flex/",
+  "yt": "Bootstrap Flex Ausrichtung"
+ },
+ "JavaScript-Bauteile": {
+  "doc": "https://getbootstrap.com/docs/5.3/getting-started/javascript/",
+  "yt": "Bootstrap Modal Tooltip JavaScript"
+ },
+ "Breakpoints": {
+  "doc": "https://getbootstrap.com/docs/5.3/layout/breakpoints/",
+  "yt": "Bootstrap Breakpoints responsive"
+ },
+ "Anpassen & Sass": {
+  "doc": "https://getbootstrap.com/docs/5.3/customize/sass/",
+  "yt": "Bootstrap mit Sass anpassen"
+ },
+ "Umstieg von 4 auf 5": {
+  "doc": "https://getbootstrap.com/docs/5.3/migration/",
+  "yt": "Bootstrap 4 auf 5 umstellen"
+ }
+};
+const KURSE = [
+  {t:"Mit Mario · Bootstrap in 40 Minuten", id:"GEujtYwX3uQ"},
+  {t:"Bootstrap in 20 Minuten", id:"ZRsIPaGpeS0"},
+  {t:"dannerbam · Bootstrap 5 von Anfang an", id:"B0euQ-FX-kE"}
+];
+
+const $ = id => document.getElementById(id);
+
+/* Erzeugt die Linkzeile zu einem Thema */
+function lernLinks(thema, klein){
+  const l = LERNSTOFF[thema] || {};
+  const box = document.createElement("div");
+  box.className = klein ? "review__links" : "plan__links";
+  const a = (href, text, cls) => {
+    const el = document.createElement("a");
+    el.className = "lnk" + (cls ? " " + cls : "");
+    el.href = href; el.target = "_blank"; el.rel = "noopener";
+    el.textContent = text;
+    return el;
+  };
+  box.appendChild(a(
+    "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent((l.yt || thema) + " Tutorial deutsch"),
+    "\u25B6 Lernvideo", "lnk--video"));
+  if (l.doc) box.appendChild(a(l.doc, "Nachlesen"));
+  return box;
+}
+
+/* Baut Text mit erlaubter Auszeichnung (<code>, <em>) auf.
+   Falls rohes Markup vom Browser verschluckt wuerde und nichts uebrig bleibt,
+   wird der Text stattdessen unveraendert angezeigt statt einer leeren Zeile. */
+function rich(txt, cls){
+  const el = document.createElement("span");
+  if (cls) el.className = cls;
+  el.innerHTML = txt;
+  if (!el.textContent.trim()) el.textContent = txt;
+  return el;
+}
+const DIFF = {1:{name:"Leicht",cls:"d1"},2:{name:"Mittel",cls:"d2"},3:{name:"Knifflig",cls:"d3"}};
+
+let selTopics = new Set();
+let selDiffs  = new Set([1,2,3]);
+let size      = 24;                       /* 0 = alle */
+let deck = [], idx = 0, score = 0, wrong = 0, answers = [], orders = [], log = [];
+
+/* ----- Zeitmessung & Fensterwechsel ----- */
+let running = false;          /* laeuft gerade ein Test? */
+let tStart = 0, tTotal = 0;   /* Startzeitpunkt, Gesamtdauer in ms */
+let ticker = null;
+let awayNow = false, awaySince = 0, awayCount = 0, awayTotal = 0;
+let tippBenutzt = [];        /* je Frage: wurde der Tipp aufgedeckt? */
+let tippVorrat = 3;          /* Startguthaben */
+let tippVergeben = [];       /* je Frage: wurde hier schon nachgelegt? */
+
+function fmt(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+  const pad = n => String(n).padStart(2,"0");
+  return h ? h + ":" + pad(m) + ":" + pad(s) : pad(m) + ":" + pad(s);
+}
+function fmtLong(ms){
+  const sec = Math.max(0, Math.round(ms/1000));
+  if (sec < 60) return sec + " Sek.";
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + " Min. " + s + " Sek.";
+}
+function paintClock(){
+  $("clock").textContent = fmt(Date.now() - tStart);
+  const b = $("awayBadge");
+  if (awayCount){
+    b.classList.remove("hidden");
+    b.textContent = "\u26A0 " + awayCount + "\u00D7 weg";
+  } else b.classList.add("hidden");
+  const t = $("tippBadge");
+  const n = tippBenutzt.filter(Boolean).length;
+  if (running){
+    t.classList.remove("hidden");
+    t.textContent = "\u{1F4A1} " + tippVorrat + " übrig" + (n ? " · " + n + " genutzt" : "");
+  } else t.classList.add("hidden");
+}
+function timerStart(){
+  running = true;
+  tStart = Date.now(); tTotal = 0;
+  awayNow = false; awaySince = 0; awayCount = 0; awayTotal = 0;
+  tippBenutzt = []; tippVorrat = 3; tippVergeben = [];
+  paintClock();
+  clearInterval(ticker);
+  ticker = setInterval(paintClock, 1000);
+}
+function timerStop(){
+  if (!running) return;
+  if (awayNow){ awayTotal += Date.now() - awaySince; awayNow = false; }
+  tTotal = Date.now() - tStart;
+  running = false;
+  clearInterval(ticker); ticker = null;
+}
+
+/* Zaehlt jedes Verlassen des Fensters: Tabwechsel, anderes Programm, minimiert */
+function leave(){
+  if (!running || awayNow) return;
+  awayNow = true; awaySince = Date.now(); awayCount++;
+  paintClock();
+}
+function comeBack(){
+  if (!running || !awayNow) return;
+  awayTotal += Date.now() - awaySince;
+  awayNow = false;
+  paintClock();
+}
+document.addEventListener("visibilitychange", () => document.hidden ? leave() : comeBack());
+window.addEventListener("blur",  leave);
+window.addEventListener("focus", comeBack);
+
+/* ----- Themen sammeln ----- */
+const topics = [];
+QUESTIONS.forEach(q => {
+  let t = topics.find(x => x.t === q.t);
+  if (!t) topics.push({ t:q.t, g:q.g, n:1 }); else t.n++;
+});
+const groups = [...new Set(topics.map(t => t.g))];
+$("count").textContent =
+  QUESTIONS.length + " Fragen · " + topics.length + " Themen · von leicht bis knifflig gestaffelt";
+
+/* ----- Schwierigkeits-Chips ----- */
+[1,2,3].forEach(d => {
+  const n = QUESTIONS.filter(q => q.d === d).length;
+  const b = document.createElement("button");
+  b.className = "chip chip--" + DIFF[d].cls;
+  b.type = "button";
+  b.setAttribute("aria-pressed","true");
+  b.innerHTML = DIFF[d].name + ' <span class="chip__n">' + n + '</span>';
+  b.onclick = () => {
+    if (selDiffs.has(d)) { if (selDiffs.size === 1) return; selDiffs.delete(d); b.setAttribute("aria-pressed","false"); }
+    else { selDiffs.add(d); b.setAttribute("aria-pressed","true"); }
+    updateGo();
+  };
+  $("diffs").appendChild(b);
+});
+
+/* ----- Umfang-Chips ----- */
+[{v:12,l:"Kurz · 12 Fragen"},{v:24,l:"Standard · 24 Fragen"},{v:40,l:"Ausführlich · 40 Fragen"},{v:0,l:"Alles"}].forEach(o => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button"; b.textContent = o.l;
+  b.setAttribute("aria-pressed", String(o.v === size));
+  b.onclick = () => {
+    size = o.v;
+    [...$("sizes").children].forEach(c => c.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    updateGo();
+  };
+  $("sizes").appendChild(b);
+});
+
+/* ----- Themen-Chips ----- */
+groups.forEach(g => {
+  const box = document.createElement("div");
+  box.className = "group";
+  const h = document.createElement("p");
+  h.className = "group__h"; h.textContent = g;
+  const row = document.createElement("div");
+  row.className = "chips";
+  topics.filter(t => t.g === g).forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.innerHTML = t.t + ' <span class="chip__n">' + t.n + '</span>';
+    b.setAttribute("aria-pressed","false");
+    b.onclick = () => {
+      if (selTopics.has(t.t)) { selTopics.delete(t.t); b.setAttribute("aria-pressed","false"); }
+      else { selTopics.add(t.t); b.setAttribute("aria-pressed","true"); }
+      updateGo();
+    };
+    row.appendChild(b);
+  });
+  box.append(h,row);
+  $("topics").appendChild(box);
+});
+
+$("topicToggle").onclick = () => {
+  const open = $("topicsBox").classList.toggle("open");
+  $("topicToggle").setAttribute("aria-expanded", String(open));
+};
+
+$("all").onclick = () => {
+  const on = selTopics.size !== topics.length;
+  selTopics = on ? new Set(topics.map(t => t.t)) : new Set();
+  document.querySelectorAll("#topics .chip").forEach(c => c.setAttribute("aria-pressed", String(on)));
+  updateGo();
+};
+
+function matching(){
+  return QUESTIONS.filter(q =>
+    selDiffs.has(q.d) && (selTopics.size === 0 || selTopics.has(q.t))
+  );
+}
+function updateGo(){
+  const n = matching().length;
+  const take = size === 0 ? n : Math.min(size, n);
+  $("go").disabled = n === 0;
+  $("go").textContent = n === 0 ? "Keine Fragen im Filter" : "Test starten · " + take + " Fragen";
+  $("topicSummary").textContent = selTopics.size === 0
+    ? "Themen eingrenzen — aktuell alle"
+    : "Themen eingrenzen — " + selTopics.size + " von " + topics.length + " gewählt";
+}
+updateGo();
+
+/* Selbsttest: meldet in der Konsole, falls ein Text beim Rendern leer bliebe */
+(function pruefe(){
+  const leer = [];
+  QUESTIONS.forEach((q,i) => {
+    const test = t => {
+      const d = document.createElement("span"); d.innerHTML = t;
+      const sichtbar = d.textContent.replace(/\\u00A0/g, " ").trim();
+      return !sichtbar || sichtbar.length < String(t).replace(/<[^>]*>/g, "").trim().length / 3;
+    };
+    if (test(q.q)) leer.push("Frage " + i + " (" + q.t + "): Fragetext");
+    if (q.typ === "luecke"){
+      if (!q.code || q.code.indexOf("\u2581\u2581\u2581") < 0)
+        leer.push("Frage " + i + " (" + q.t + "): keine Lücke im Code");
+      if (!Array.isArray(q.loesung) || !q.loesung.length || !String(q.loesung[0]).trim())
+        leer.push("Frage " + i + " (" + q.t + "): keine Lösung hinterlegt");
+    } else {
+      if (!Array.isArray(q.o) || q.o.length !== 4)
+        leer.push("Frage " + i + " (" + q.t + "): Antworten fehlen");
+      else q.o.forEach((o,j) => { if (test(o)) leer.push("Frage " + i + " (" + q.t + "): Antwort " + "ABCD"[j]); });
+    }
+    if (test(q.e)) leer.push("Frage " + i + " (" + q.t + "): Erklaerung");
+  });
+  if (leer.length) console.warn("Leer gerenderte Texte:\\n" + leer.join("\\n"));
+})();
+
+/* Statusanzeige oben rechts */
+function zeigeStats(q){
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+}
+
+/* Codeblock ausgeben; bei Lueckenfragen wird die Luecke hervorgehoben.
+   Alles ueber Textknoten, damit Markup niemals interpretiert wird. */
+const LUECKE = "\u2581\u2581\u2581";
+function zeigeCode(text, zustand, ersatz){
+  const pre = $("code");
+  pre.textContent = "";
+  const teile = String(text).split(LUECKE);
+  teile.forEach((t, i) => {
+    pre.appendChild(document.createTextNode(t));
+    if (i < teile.length - 1){
+      const m = document.createElement("span");
+      m.className = "gapmark" + (zustand ? " gapmark--" + zustand : "");
+      m.textContent = ersatz || LUECKE;
+      pre.appendChild(m);
+    }
+  });
+  pre.classList.remove("hidden");
+}
+
+/* Vergleich grosszuegig: Gross-/Kleinschreibung, Mehrfach-Leerzeichen
+   und die Anfuehrungszeichenart sind egal. */
+function normAntwort(t){
+  return String(t).trim().toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[\u2018\u2019\u201A\u201C\u201D\u201E']/g, '"');
+}
+
+function lueckeSperren(q, eingabe, ok){
+  $("gapInput").value = eingabe;
+  $("gapInput").disabled = true;
+  $("gapCheck").disabled = true;
+  zeigeCode(q.code, ok ? "ok" : "bad", ok ? q.loesung[0] : eingabe);
+  $("gapTipp").textContent = "";
+
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.textContent = "";
+  const titel = document.createElement("strong");
+  titel.textContent = ok ? "Richtig" : "Leider falsch";
+  ex.appendChild(titel);
+  if (!ok){
+    const zeile = document.createElement("p");
+    zeile.style.margin = "0 0 7px";
+    zeile.appendChild(document.createTextNode("Richtig wäre: "));
+    const l = document.createElement("span");
+    l.className = "loesung";
+    l.textContent = q.loesung[0];
+    zeile.appendChild(l);
+    ex.appendChild(zeile);
+  }
+  ex.insertAdjacentHTML("beforeend", q.e);
+}
+
+function lueckePruefen(){
+  const q = deck[idx];
+  if (!q || q.typ !== "luecke" || answers[idx] !== undefined) return;
+  const eingabe = $("gapInput").value;
+  if (!eingabe.trim()){ $("gapInput").focus(); return; }
+  const ok = q.loesung.some(l => normAntwort(l) === normAntwort(eingabe));
+  answers[idx] = eingabe;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen: eingabe, ok, tipp: !!tippBenutzt[idx] };
+  lueckeSperren(q, eingabe, ok);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x,y) => x[0]-y[0]).map(p => p[1]);
+
+/* Zieht eine Auswahl, die die gewählten Schwierigkeiten möglichst gleichmäßig abbildet */
+function buildDeck(){
+  const pool = matching();
+  /* Auch bei "Alles" gemischt – sonst käme immer dieselbe Reihenfolge */
+  if (size === 0 || size >= pool.length) return shuffle(pool);
+  const levels = [...selDiffs].sort();
+  const buckets = levels.map(d => shuffle(pool.filter(q => q.d === d)));
+  const out = [];
+  let i = 0;
+  while (out.length < size) {
+    const b = buckets[i % buckets.length];
+    if (b.length) out.push(b.pop());
+    else if (buckets.every(x => x.length === 0)) break;
+    i++;
+  }
+  return shuffle(out);
+}
+
+/* ----- Ablauf ----- */
+function start(pool){
+  deck = pool; idx = 0; score = 0; wrong = 0; answers = []; orders = []; log = [];
+  timerStart();
+  $("start").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("go").onclick = () => start(buildDeck());
+
+function render(){
+  const q = deck[idx];
+  $("pos").textContent = "Frage " + (idx+1) + " von " + deck.length;
+  $("stats").innerHTML =
+    '<span class="badge badge--' + DIFF[q.d].cls + '">' + DIFF[q.d].name + '</span>' +
+    '<span class="tally tally--ok">&#10003; ' + score + '</span>' +
+    '<span class="tally tally--bad">&#10007; ' + wrong + '</span>';
+  $("fill").style.width = (idx / deck.length * 100) + "%";
+  $("topicline").textContent = q.g + " · " + q.t;
+  $("q").replaceChildren(rich(q.q));
+
+  const istLuecke = q.typ === "luecke";
+  $("opts").classList.toggle("hidden", istLuecke);
+  $("gapbox").classList.toggle("hidden", !istLuecke);
+  $("keyhint").innerHTML = istLuecke
+    ? 'Antwort eintippen · <kbd>Enter</kbd> prüfen, dann <kbd>Enter</kbd> weiter'
+    : '<kbd>A</kbd>\u2013<kbd>D</kbd> antworten · <kbd>Enter</kbd> weiter · <kbd>\u2190</kbd> <kbd>\u2192</kbd> blättern';
+
+  if (q.code){
+    if (istLuecke) zeigeCode(q.code);
+    else { $("code").textContent = q.code; $("code").classList.remove("hidden"); }
+  } else $("code").classList.add("hidden");
+
+  $("prev").disabled = idx === 0;
+  $("next").textContent = idx+1 === deck.length ? "Auswerten" : "Weiter";
+
+  const opts = $("opts");
+  opts.innerHTML = "";
+  if (!istLuecke){
+  if (!orders[idx]) orders[idx] = shuffle(q.o.map((text,i) => ({text,i})));
+  orders[idx].forEach((o,n) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    const key = document.createElement("span");
+    key.className = "opt__key"; key.textContent = "ABCD"[n];
+    const mark = document.createElement("span");
+    mark.className = "opt__mark";
+    b.append(key, rich(o.text, "opt__txt"), mark);
+    b.onclick = () => answer(o.i, q, opts);
+    opts.appendChild(b);
+  });
+  }
+
+  /* Ab jeder 10. Frage kommt ein Tipp dazu – pro Frage nur einmal */
+  let neuerTipp = false;
+  if ((idx + 1) % 10 === 0 && !tippVergeben[idx]){
+    tippVergeben[idx] = true;
+    tippVorrat++;
+    neuerTipp = true;
+  }
+  if (running) paintClock();   /* Anzeige oben sofort nachziehen, nicht erst beim nächsten Takt */
+
+  /* Tipp gibt es auf Knopfdruck – er nennt nie die Lösung selbst */
+  const hatTipp = !!q.tipp && answers[idx] === undefined;
+  $("tipprow").classList.toggle("hidden", !hatTipp);
+  $("tippNeu").classList.toggle("hidden", !(neuerTipp && hatTipp));
+  /* Knopfbeschriftung immer aktuell halten, auch wenn die Zeile gerade versteckt ist */
+  $("tippBtn").disabled = tippVorrat < 1;
+  $("tippBtn").textContent = tippVorrat > 0
+    ? "\u{1F4A1} Tipp anzeigen (" + tippVorrat + " übrig)"
+    : "\u{1F4A1} Keine Tipps mehr übrig";
+
+  if (hatTipp){
+    $("tippText").textContent = q.tipp;
+    if (tippBenutzt[idx]){
+      /* schon aufgedeckt: Text zeigen, nicht erneut abbuchen */
+      $("tippBtn").classList.add("hidden");
+      $("tippText").classList.remove("hidden");
+    } else {
+      $("tippBtn").classList.remove("hidden");
+      $("tippText").classList.add("hidden");
+    }
+  }
+
+  if (answers[idx] === undefined){
+    $("explain").classList.add("hidden");
+    $("next").disabled = true;
+    if (istLuecke){
+      $("gapInput").value = "";
+      $("gapInput").disabled = false;
+      $("gapCheck").disabled = false;
+      setTimeout(() => $("gapInput").focus(), 0);
+    }
+  } else {
+    if (istLuecke) lueckeSperren(q, answers[idx], log[idx] && log[idx].ok);
+    else lock(opts, q, answers[idx]);
+    $("next").disabled = false;
+  }
+}
+
+function lock(opts, q, chosen){
+  const ok = chosen === q.a;
+  [...opts.children].forEach((b,n) => {
+    b.disabled = true;
+    const i = orders[idx][n].i;
+    const mark = b.querySelector(".opt__mark");
+    if (i === q.a){ b.classList.add("opt--right"); mark.textContent = "✓"; }
+    else if (i === chosen){ b.classList.add("opt--wrong"); mark.textContent = "✗"; }
+    else b.classList.add("opt--dim");
+  });
+  const ex = $("explain");
+  ex.className = "explain " + (ok ? "explain--ok" : "explain--bad");
+  ex.innerHTML = "<strong>" + (ok ? "Richtig" : "Leider falsch") + "</strong>" + q.e;
+}
+
+function answer(chosen, q, opts){
+  if (answers[idx] !== undefined) return;
+  answers[idx] = chosen;
+  const ok = chosen === q.a;
+  ok ? score++ : wrong++;
+  log[idx] = { q, chosen, ok, tipp: !!tippBenutzt[idx] };
+  lock(opts, q, chosen);
+  $("tipprow").classList.add("hidden");
+  zeigeStats(q);
+  $("next").disabled = false;
+  $("next").focus();
+}
+
+$("tippBtn").onclick = () => {
+  if (tippVorrat < 1 || tippBenutzt[idx]) return;
+  tippVorrat--;
+  tippBenutzt[idx] = true;
+  $("tippBtn").classList.add("hidden");
+  $("tippNeu").classList.add("hidden");
+  $("tippText").classList.remove("hidden");
+  paintClock();
+};
+$("gapCheck").onclick = lueckePruefen;
+$("prev").onclick = () => { if (idx > 0){ idx--; render(); } };
+$("next").onclick = () => { idx++; idx < deck.length ? render() : (timerStop(), finish(false)); };
+$("quit").onclick = () => {
+  const beantwortet = log.filter(Boolean).length;
+  timerStop();
+  if (!beantwortet){                                  /* nichts beantwortet: nur zurueck */
+    $("quiz").classList.add("hidden");
+    $("start").classList.remove("hidden");
+    return;
+  }
+  finish(true);                                       /* sonst Auswertung des Bearbeiteten */
+};
+$("again").onclick = () => { $("result").classList.add("hidden"); $("start").classList.remove("hidden"); };
+$("wrongOnly").onclick = () => start(log.filter(l => l && !l.ok).map(l => l.q));
+
+/* ----- Auswertung ----- */
+function finish(aborted){
+  timerStop();
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  const total = log.filter(Boolean).length;           /* bei Abbruch nur das Bearbeitete */
+  $("resultLabel").textContent = aborted ? "Auswertung · abgebrochen" : "Auswertung";
+  const note = $("abortNote");
+  if (aborted){
+    note.classList.remove("hidden");
+    note.textContent = "Test vorzeitig beendet — ausgewertet sind die " + total +
+      " von " + deck.length + " bearbeiteten Fragen.";
+  } else note.classList.add("hidden");
+
+  const pct = Math.round(score / total * 100);
+  $("ring").style.setProperty("--p", pct);
+  $("ringNum").innerHTML = pct + '<span>%</span>';
+
+  /* Trefferquote je Schwierigkeit */
+  const per = {};
+  [1,2,3].forEach(d => {
+    const all = log.filter(l => l && l.q.d === d);
+    if (all.length) per[d] = { n:all.length, ok:all.filter(l => l.ok).length };
+  });
+  const rate = d => per[d] ? Math.round(per[d].ok / per[d].n * 100) : null;
+
+  /* Niveau */
+  let name, desc;
+  if (pct >= 92)      { name = "Sehr sicher";            desc = "Nahezu alles sitzt — auch die kniffligen Details."; }
+  else if (pct >= 78) { name = "Fortgeschritten";        desc = "Gutes, belastbares Verständnis. Es fehlen nur einzelne Feinheiten."; }
+  else if (pct >= 62) { name = "Solide Grundlagen";      desc = "Die wichtigsten Bausteine sind da, bei Details wird es stellenweise unsicher."; }
+  else if (pct >= 45) { name = "Grundlagen im Aufbau";   desc = "Vieles ist bekannt, aber noch nicht gefestigt. Wiederholung lohnt sich."; }
+  else                { name = "Einsteiger";             desc = "Die Basis ist noch dünn — am besten Schritt für Schritt von vorn."; }
+
+  const r1 = rate(1), r3 = rate(3);
+  if (r1 !== null && r3 !== null){
+    if (r1 >= 80 && r3 < 45) desc += " Auffällig: Die Grundlagen sitzen, bei den kniffligen Fragen wird es deutlich dünner — es fehlt noch das Verständnis hinter den Regeln.";
+    else if (r1 < 60 && r3 >= 70) desc += " Interessant: Die schweren Fragen laufen besser als die leichten — hier fehlen eher Begriffe als Verständnis.";
+    else if (r3 >= 75) desc += " Auch die kniffligen Fragen sitzen — das spricht für echtes Verständnis, nicht nur Auswendiggelerntes.";
+  }
+  $("levelName").textContent = name;
+  $("levelDesc").textContent = score + " von " + total + " richtig. " + desc;
+
+  /* Tipps: wo wurde geholfen? */
+  const beantwortet = log.filter(Boolean);
+  const mitTipp = beantwortet.filter(l => l.tipp);
+  const tippMoeglich = beantwortet.filter(l => l.q.tipp).length;
+  const tippVerfuegbar = 3 + Math.floor(beantwortet.length / 10);   /* Start plus Nachschub */
+
+  /* Zeit & Fensterwechsel */
+  const facts = $("facts");
+  facts.innerHTML = "";
+  const proFrage = total ? tTotal / total : 0;
+  const fact = (k,v,sub,cls) =>
+    '<div class="fact ' + (cls||"") + '"><p class="fact__k">' + k + '</p>' +
+    '<p class="fact__v">' + v + '</p>' +
+    (sub ? '<p class="fact__s">' + sub + '</p>' : '') + '</div>';
+
+  facts.innerHTML =
+    fact("Benötigte Zeit", fmt(tTotal), total + " Fragen bearbeitet") +
+    fact("Pro Frage", Math.round(proFrage/1000) + " Sek.",
+         proFrage < 12000 ? "zügig — sehr schnell entschieden"
+         : proFrage > 45000 ? "gründlich — lange überlegt"
+         : "in normalem Tempo") +
+    fact("Fenster verlassen", awayCount + "\u00D7",
+         awayCount === 0 ? "durchgehend im Test geblieben"
+         : "insgesamt " + fmtLong(awayTotal) + " außerhalb",
+         awayCount === 0 ? "fact--ok" : "fact--warn") +
+    fact("Tipps genutzt", mitTipp.length + " von " + tippVerfuegbar,
+         mitTipp.length === 0 ? "ohne Hilfe durchgekommen"
+         : "noch " + Math.max(0, tippVerfuegbar - mitTipp.length) + " übrig · " +
+           tippMoeglich + " Fragen boten einen Tipp an",
+         mitTipp.length === 0 ? "fact--ok" : "");
+
+  /* Balken je Schwierigkeit */
+  const bars = $("bars");
+  bars.innerHTML = '<p class="label">Nach Schwierigkeit</p>';
+  [1,2,3].forEach(d => {
+    if (!per[d]) return;
+    const p = rate(d);
+    const el = document.createElement("div");
+    el.innerHTML =
+      '<div class="bar__head"><span class="bar__name">' + DIFF[d].name + '</span>' +
+      '<span class="bar__val">' + per[d].ok + '/' + per[d].n + ' · ' + p + '%</span></div>' +
+      '<div class="bar__track"><div class="bar__fill bar__fill--' + DIFF[d].cls + '" style="width:' + p + '%"></div></div>';
+    bars.appendChild(el);
+  });
+
+  /* Welche Fragen brauchten einen Tipp? */
+  const tl = $("tippliste");
+  if (mitTipp.length){
+    tl.classList.remove("hidden");
+    tl.innerHTML = '<p class="label">Tipp geholt bei diesen Fragen (' + mitTipp.length + ')</p>';
+    const liste = document.createElement("div");
+    liste.className = "tippliste__list";
+    mitTipp.forEach(l => {
+      const zeile = document.createElement("div");
+      zeile.className = "tippitem " + (l.ok ? "tippitem--ok" : "tippitem--bad");
+      const mark = document.createElement("span");
+      mark.className = "tippitem__mark";
+      mark.textContent = l.ok ? "\u2713" : "\u2717";
+      const txt = document.createElement("span");
+      txt.className = "tippitem__txt";
+      const thema = document.createElement("span");
+      thema.className = "tippitem__thema";
+      thema.textContent = l.q.t + " · " + DIFF[l.q.d].name +
+        (l.ok ? " · danach richtig" : " · danach trotzdem falsch");
+      txt.append(thema, rich(l.q.q));
+      zeile.append(mark, txt);
+      liste.appendChild(zeile);
+    });
+    tl.appendChild(liste);
+  } else tl.classList.add("hidden");
+
+  /* Schwache Themen */
+  const bad = {};
+  log.forEach(l => { if (l && !l.ok) bad[l.q.t] = (bad[l.q.t] || 0) + 1; });
+  const badList = Object.keys(bad).sort((a,b) => bad[b] - bad[a]);
+  const gaps = $("gaps");
+  if (badList.length){
+    gaps.classList.remove("hidden");
+    gaps.innerHTML = '<p class="label">Lernplan — diese Themen nochmal ansehen</p>';
+    const liste = document.createElement("div");
+    liste.className = "plan__list";
+    badList.forEach(t => {
+      const zeile = document.createElement("div");
+      zeile.className = "plan__item";
+      const name = document.createElement("span");
+      name.className = "plan__name";
+      name.textContent = t;
+      const n = document.createElement("span");
+      n.className = "plan__n";
+      n.textContent = bad[t] + (bad[t] === 1 ? " Fehler" : " Fehler");
+      name.appendChild(n);
+      zeile.append(name, lernLinks(t, false));
+      liste.appendChild(zeile);
+    });
+    gaps.appendChild(liste);
+
+    const kurse = document.createElement("div");
+    kurse.className = "kurse";
+    kurse.innerHTML = '<p class="label" style="margin:0">Oder von vorn: komplette Kurse</p>';
+    const kl = document.createElement("div");
+    kl.className = "kurse__list";
+    KURSE.forEach(k => {
+      const a = document.createElement("a");
+      a.className = "lnk"; a.target = "_blank"; a.rel = "noopener";
+      a.href = "https://www.youtube.com/watch?v=" + k.id;
+      a.textContent = "\u25B6 " + k.t;
+      kl.appendChild(a);
+    });
+    kurse.appendChild(kl);
+    const q = document.createElement("p");
+    q.className = "quelle";
+    q.textContent = "Videolinks führen zur YouTube-Suche zum jeweiligen Thema, „Nachlesen“ zur Bootstrap-Doku.";
+    kurse.appendChild(q);
+    gaps.appendChild(kurse);
+  } else gaps.classList.add("hidden");
+
+  /* Fehler im Detail */
+  const wrongs = log.filter(l => l && !l.ok);
+  $("wrongOnly").disabled = wrongs.length === 0;
+  const rev = $("review");
+  rev.innerHTML = "";
+  if (!wrongs.length){
+    rev.innerHTML = '<p class="review__empty">Keine Fehler — nichts zu wiederholen.</p>';
+    return;
+  }
+  const head = document.createElement("p");
+  head.className = "label"; head.style.marginTop = "22px";
+  head.textContent = "Falsch beantwortet (" + wrongs.length + ")";
+  rev.appendChild(head);
+  wrongs.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "review__item";
+    d.innerHTML =
+      '<div class="review__top">' +
+        '<span class="badge badge--' + DIFF[l.q.d].cls + '">' + DIFF[l.q.d].name + '</span>' +
+        '<span class="review__topic">' + l.q.t + '</span>' +
+        (l.tipp ? '<span class="badge badge--tipp">Tipp benutzt</span>' : '') +
+      '</div>' +
+      '<p class="review__q">' + l.q.q + '</p>' +
+      '<div class="review__a"></div>' +
+      '<p class="review__e">' + l.q.e + '</p>';
+    const box = d.querySelector(".review__a");
+    const zeile = (titel, text, cls) => {
+      const s = document.createElement("span");
+      s.className = cls;
+      s.innerHTML = "<b>" + titel + "</b> ";
+      s.appendChild(rich(text));
+      return s;
+    };
+    if (l.q.typ === "luecke"){
+      const nur = (titel, text, cls) => {
+        const s = document.createElement("span");
+        s.className = cls;
+        s.innerHTML = "<b>" + titel + "</b> ";
+        const c = document.createElement("code");
+        c.textContent = text;
+        s.appendChild(c);
+        return s;
+      };
+      box.append(
+        nur("Deine Antwort:", l.chosen,        "review__mine"),
+        nur("Richtig:",       l.q.loesung[0],  "review__right")
+      );
+    } else {
+      box.append(
+        zeile("Deine Antwort:", l.q.o[l.chosen], "review__mine"),
+        zeile("Richtig:",       l.q.o[l.q.a],    "review__right")
+      );
+    }
+    d.appendChild(lernLinks(l.q.t, true));
+    rev.appendChild(d);
+  });
+}
+
+/* ----- Tastatur ----- */
+document.addEventListener("keydown", e => {
+  if ($("quiz").classList.contains("hidden")) return;
+  /* Waehrend des Tippens keine Buchstaben-Kuerzel abfangen */
+  if (document.activeElement && document.activeElement.tagName === "INPUT"){
+    if (e.key === "Enter"){
+      e.preventDefault();
+      if (!$("gapCheck").disabled) $("gapCheck").click();
+      else if (!$("next").disabled) $("next").click();
+    }
+    return;
+  }
+  const map = {a:0,b:1,c:2,d:3,"1":0,"2":1,"3":2,"4":3};
+  const k = e.key.toLowerCase();
+  const onBtn = ["BUTTON"].includes(document.activeElement && document.activeElement.tagName);
+  if (k in map){ const b = $("opts").children[map[k]]; if (b && !b.disabled){ e.preventDefault(); b.click(); } }
+  /* Enter nicht doppelt ausloesen, wenn bereits ein Button den Fokus hat */
+  if (e.key === "Enter" && !onBtn && !$("next").disabled) $("next").click();
+  if (e.key === "ArrowLeft"  && !$("prev").disabled) $("prev").click();
+  if (e.key === "ArrowRight" && !$("next").disabled) $("next").click();
+});
+</script>
 </body>
 </html>
